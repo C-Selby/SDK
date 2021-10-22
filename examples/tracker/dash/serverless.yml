@@ -9,13 +9,12 @@ custom:
       Description: Name of dynamodb table to connect to (assumes the same account)
       Default: ${opt:tablename}
   wsgi:
-    app: app.app
+    app: app.server
 
 provider:
   name: aws
   runtime: python3.8
   lambdaHashingVersion: '20201221'
-  stage: dev
   iam:
     role:
       statements:
@@ -33,15 +32,14 @@ provider:
     TABLE: ${TableName}
 
 functions:
-  api:
+
+  catchAllAny:
+
     handler: wsgi_handler.handler
+
     events:
-      - http:
-          path: /
-          method: ANY
-      - http:
-          path: /{proxy+}
-          method: ANY
+
+      - httpApi: '*'
 
 plugins:
   - serverless-wsgi

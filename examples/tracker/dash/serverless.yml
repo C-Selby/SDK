@@ -1,0 +1,47 @@
+service: myriota-tracker-dash
+
+frameworkVersion: '2'
+
+custom:
+  parameters:
+    TableName:
+      Type: String
+      Description: Name of dynamodb table to connect to (assumes the same account)
+      Default: ${opt:tablename}
+  wsgi:
+    app: app.server
+
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: '20201221'
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}
+  environment:
+    TABLE: ${TableName}
+
+functions:
+
+  catchAllAny:
+
+    handler: wsgi_handler.handler
+
+    events:
+
+      - httpApi: '*'
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
+  - serverless-parameters

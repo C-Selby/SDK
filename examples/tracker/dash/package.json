@@ -1,0 +1,10 @@
+{
+  "name": "myriota-tracker-dash",
+  "version": "1.0.0",
+  "author": "",
+  "devDependencies": {
+    "serverless-python-requirements": "^5.1.0",
+    "serverless-wsgi": "^1.7.6",
+    "serverless-parameters": "^0.1.0"
+  }
+}
